@@ -1,0 +1,26 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --trace-deprecation main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "overrides": {
+    "ajv": "^8.17.1",
+    "whatwg-url": "^14.0.0"
+  },
+  "resolutions": {
+    "punycode": "^2.3.1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "punycode": "^2.3.1",
+    "telegraf": "^4.16.3",
+    "url": "^0.11.4",
+    "userland": "^0.4.3"
+  }
+}
