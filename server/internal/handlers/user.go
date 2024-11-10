@@ -1,27 +1,31 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+	apimodels "github.com/mksmstpck/telegram-miniapp/server/internal/handlers/apiModels"
 	"github.com/mksmstpck/telegram-miniapp/server/internal/utils"
 )
 
-func verifyUserHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) verifyUserHandler(c *gin.Context) {
 	// Parse JSON from Vue front-end
-	var req struct {
-		User map[string]string `json:"user"`
-		Hash string            `json:"hash"`
+	var user apimodels.UserValidate
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, apimodels.Message{Message: err.Error()})
+		return
 	}
-	json.NewDecoder(r.Body).Decode(&req)
 
 	botToken := "YOUR_TELEGRAM_BOT_TOKEN"
-	if utils.VerifyTelegramAuth(req.User, req.Hash, botToken) {
-		// User is verified, proceed to create a session or JWT
-		// Return success response
-		w.WriteHeader(http.StatusOK)
+	if utils.VerifyTelegramAuth(user.User, user.Hash, botToken) {
+		token, err := h.s.Token.Create(user.User.TelegramID)
+		if err != nil {
+			c.AbortWithStatusJSON(500, apimodels.Message{Message: err.Error()})
+		}
+		c.JSON(201, apimodels.Message{Message: token.Token})
+
 	} else {
-		// Verification failed
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, nil)
+
 	}
 }
