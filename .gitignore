@@ -28,3 +28,8 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+config.env
+Taskfile.yml
+TODO.txt
+fly.toml
